@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     # Choosing a player's symbol
     while True:
-        p1symbol = input(p1name, " what symbol do you wish to use, X or O?").upper()
+        p1symbol = (input(p1name + " what symbol do you wish to use, X or O?")).upper()
         print(" ")
         if p1symbol not in ["X" or "O"]:
             print("Entered symbol must be X or O", endl="/n")
