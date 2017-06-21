@@ -1,31 +1,31 @@
 import random
-
+#more bugs than an ant nest ;p
 
 def display_board(board):
     row = 0
     column = 0
     print("  | 1 2 3 ")
     print("--+-------")
-    for row in range(1, 3):
-        print(row, " | ")
-        for column in range(1, 3):
-            print(board[column][row], " ", endl="/n")
+    for row in range(0, 3):
+        print(row+1, "| ", end="")
+        for column in range(0, 3):
+            print(board[column][row] + " ", end="")
         print(" ")
 
         
 def clear_board():
-    board = [["" for i in range(1, 3)] for j in range(1, 3)]
+    board = [[None for i in range(0, 3)] for j in range(0, 3)]
     row = 0
     column = 0
-    for row in range(1, 3):
-        for column in range(1, 3):
-            board[column][row] = ""
+    for row in range(0, 3):
+        for column in range(0, 3):
+            board[column][row] = " "
     return board
 
             
 def get_move_coordinates():
-    x_coord = input("Enter x coordinate: ")
-    y_coord = input("Enter y coordinate: ")
+    x_coord = int(input("Enter x coordinate: "))
+    y_coord = int(input("Enter y coordinate: "))
     print(" ")
     return x_coord, y_coord
 
@@ -36,6 +36,11 @@ def check_valid_move(x_coord, y_coord, board):
     # Check x coordinate is vaild
     if x_coord < 1 or x_coord > 3:
         valid_move = False
+    elif y_coord < 1 or y_coord > 3:
+        valid_move = False
+    else:
+        if board[x_coord-1][y_coord-1] != " ":
+            valid_move = False
         
     return valid_move
 
@@ -45,13 +50,16 @@ def check_x_or_o_has_won(board):
     column = 0
     x_or_o_has_won = False
 
-    for column in range(1, 3):
-        if board[column][1] == board[column][2] and board[column][2] == board[column][3] and board[column][2] != "":
+    for column in range(0, 3):
+        if (board[column][0] == board[column][1]) and (board[column][1] == board[column][2]) and (board[column][1] != " "):
             x_or_o_has_won = True
-    for row in range(1, 3):
-        if board[1][row] == board[2][row] and board[2][row] == board[3][row] and board[2][row] != "":
+    for row in range(0, 3):
+        if (board[0][row] == board[1][row]) and (board[1][row] == board[2][row]) and (board[1][row] != " "):
             x_or_o_has_won = True
-            
+    if (board[0][0] == board[1][1]) and (board[1][1] == board[2][2]) and (board[1][1] != " "):
+        x_or_o_has_won = True
+    if (board[0][2] == board[1][1]) and (board[1][1] == board[2][0]) and (board[1][1] != " "):
+        x_or_o_has_won = True
     return x_or_o_has_won
 
 
@@ -66,8 +74,8 @@ def get_who_starts():
 
 
 if __name__ == "__main__":
-    p1name = input("What is the name of player one?")
-    p2name = input("What is the name of player two?")
+    p1name = input("What is the name of player one? ")
+    p2name = input("What is the name of player two? ")
     print(" ")
     p1score = 0
     p2score = 0
@@ -76,10 +84,11 @@ if __name__ == "__main__":
 
     # Choosing a player's symbol
     while True:
-        p1symbol = (input(p1name + " what symbol do you wish to use, X or O?")).upper()
-        print(" ")
-        if p1symbol not in ["X" or "O"]:
-            print("Entered symbol must be X or O", endl="/n")
+        p1symbol = (input(p1name + " what symbol do you wish to use, X or O? ")).upper()
+        print()
+        if p1symbol not in ["X", "O"]:
+            print("Entered symbol must be X or O")
+            print()
         else:
             break
         
@@ -90,14 +99,12 @@ if __name__ == "__main__":
         
     start_symbol = get_who_starts()
 
-
     # The game starts here
     while True:
         num_moves = 0
         game_drawn = False
         game_won = False
         board = clear_board()
-        print(" ")
         display_board(board)
 
         if start_symbol == p1symbol:
@@ -116,9 +123,10 @@ if __name__ == "__main__":
                 valid_move = check_valid_move(x_coord, y_coord, board)
                 if not valid_move:
                     print("Coordinates invalid, please try again")
+                    print()
                 else:
                     break
-            board[x_coord][y_coord] = current_symbol
+            board[x_coord-1][y_coord-1] = current_symbol
             display_board(board)
             game_won = check_x_or_o_has_won(board)
             num_moves += 1
@@ -128,35 +136,39 @@ if __name__ == "__main__":
                     game_drawn = True
                 else:
                     if current_symbol == "X":
-                        current_symbol == "O"
+                        current_symbol = "O"
                     else:
-                        current_symbol == "X"
+                        current_symbol = "X"
+                        
             if game_won or game_drawn:
                 break
 
-            # Update scores and display result
-            if game_won:
-                if p1symbol == current_symbol:
-                    print(p1name, " congratulations you win!")
-                    p1score += 1
-                else:
-                    print(p2name, " congratulations you win!")
-                    p2score += 1
+        print()
+        # Update scores and display result
+        if game_won:
+            if p1symbol == current_symbol:
+                print(p1name, " congratulations you win!")
+                p1score += 1
             else:
-                print("A draw this time!")
-            print(" ")
-            print(p1name, " your score is: ", p1score)
-            print(p2name, " your score is: ", p2score)
-            print(" ")
+                print(p2name, " congratulations you win!")
+                p2score += 1
+        else:
+            print("A draw this time!")
+        print(" ")
+        print(p1name + " your score is: ", p1score)
+        print(p2name + " your score is: ", p2score)
+        print(" ")
 
-            if start_symbol == p1symbol:
-                start_symbol == p2symbol
+        if start_symbol == p1symbol:
+            start_symbol == p2symbol
+        else:
+            start_symbol == p1symbol
+            
+        while True:
+            answer = (input("Another game? (Y/N) ")).lower()
+            if answer != "y" and answer != "n":
+                print("Please answer Y or N")
             else:
-                start_symbol == p1symbol
-                
-            while True:
-                answer = input("Another game? (Y/N)").lower()
-                if answer != "y" or answer != "n":
-                    print("Please answer Y or N")
-            if answer == "n":
                 break
+        if answer == "n":
+            break
